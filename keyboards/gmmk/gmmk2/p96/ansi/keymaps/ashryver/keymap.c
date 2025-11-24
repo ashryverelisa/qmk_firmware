@@ -37,3 +37,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   _______,  RM_HUEU,  RM_HUED,  RM_SPDD,  RM_SPDU,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  RM_VALU,   _______,  _______,  _______,  _______,
   _______,  UC_WIN,   _______,                      _______,                                _______,  _______,  _______,  RM_PREV,   RM_VALD,  RM_NEXT,  _______,  _______)
 };
+
+
+layer_state_t default_layer_state_set_user(layer_state_t state) {
+    if (get_highest_layer(state) == _VIM) {
+        autoshift_enable();
+    } else {
+        autoshift_disable();
+    }
+    return state;
+}
