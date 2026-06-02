@@ -103,3 +103,29 @@ static void ent_reset(tap_dance_state_t *state, void *user_data) {
 tap_dance_action_t tap_dance_actions[] = {
     [TD_ENT] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, ent_finished, ent_reset),
 };
+
+#ifdef OLED_ENABLE
+#    define OLED_POWER_PIN GP20
+
+oled_rotation_t oled_init_user(oled_rotation_t rotation) {
+    return OLED_ROTATION_270;
+}
+
+void keyboard_post_init_user(void) {
+    gpio_set_pin_output(OLED_POWER_PIN);
+    gpio_write_pin_low(OLED_POWER_PIN);
+    wait_ms(5);
+}
+
+bool oled_task_user(void) {
+    static bool oled_powered = false;
+    if (!oled_powered) {
+        gpio_write_pin_high(OLED_POWER_PIN);
+        wait_ms(20);
+        oled_clear();
+        oled_powered = true;
+    }
+    //oled_write_P(PSTR("Ashryver"), false);
+    return false;
+}
+#endif
