@@ -12,8 +12,16 @@
 #define OLED_BRIGHTNESS 64
 #define OLED_UPDATE_INTERVAL 50
 
-/* 0 = no timeout, keeps the layer indicator visible */
+/* OLED on/off is managed in oled_task_user so both halves stay in sync;
+   built-in timeout disabled, OLED_TIMEOUT_USER drives the idle blank */
 #define OLED_TIMEOUT 0
+#define OLED_TIMEOUT_USER 30000
+#define OLED_FADE_OUT
+
+/* split sync: WPM, last key and per-half press counts for the OLED HUD */
+#define SPLIT_TRANSPORT_MIRROR
+#define SPLIT_WPM_ENABLE
+#define SPLIT_TRANSACTION_IDS_USER USER_SYNC_OLED_STATE, USER_SYNC_LASTKEY, USER_SYNC_PRESSES
 
 /* One-Shot mods: single tap = one-shot, double tap = locked (toggle) */
 #define ONESHOT_TAP_TOGGLE 2
