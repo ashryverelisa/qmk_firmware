@@ -12,4 +12,9 @@
 #define OLED_BRIGHTNESS 64
 #define OLED_UPDATE_INTERVAL 50
 
-#define OLED_TIMEOUT 1
+/* 0 = no timeout, keeps the layer indicator visible */
+#define OLED_TIMEOUT 0
+
+/* One-Shot mods: single tap = one-shot, double tap = locked (toggle) */
+#define ONESHOT_TAP_TOGGLE 2
+#define ONESHOT_TIMEOUT 2000
