@@ -6,7 +6,7 @@ enum layers {
 };
 
 enum tap_dance_keys {
-    TD_ENT, // Tap = Enter, Hold = LShift, Double-Tap = Caps Lock
+    TD_ENT, // Tap = Enter, Hold = LShift
 };
 
 typedef enum {
@@ -86,7 +86,6 @@ static void ent_finished(tap_dance_state_t *state, void *user_data) {
     switch (ent_td_state) {
         case TD_SINGLE_TAP:  register_code(KC_ENT);  break;
         case TD_SINGLE_HOLD: register_code(KC_LSFT); break;
-        case TD_DOUBLE_TAP:  tap_code(KC_CAPS);      break; // tap = press+release
         default: break;
     }
 }
