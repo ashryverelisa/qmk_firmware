@@ -21,7 +21,7 @@
 /* split sync: WPM, last key and per-half press counts for the OLED HUD */
 #define SPLIT_TRANSPORT_MIRROR
 #define SPLIT_WPM_ENABLE
-#define SPLIT_TRANSACTION_IDS_USER USER_SYNC_OLED_STATE, USER_SYNC_LASTKEY, USER_SYNC_PRESSES
+#define SPLIT_TRANSACTION_IDS_USER USER_SYNC_DATA
 
 /* One-Shot mods: single tap = one-shot, double tap = locked (toggle) */
 #define ONESHOT_TAP_TOGGLE 2
