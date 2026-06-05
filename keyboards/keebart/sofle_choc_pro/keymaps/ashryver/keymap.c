@@ -12,6 +12,7 @@ enum oled_theme {
     THEME_HUD,   // the full status HUD (layer, locks, wpm, uptime, balance)
     THEME_ART,   // a static full-screen pixel-art picture
     THEME_BONGO, // WPM-reactive bongo animation
+    THEME_VIDEO, // looping 1-bit video (Bad Apple), see video.h
     THEME_COUNT, // keep last: number of themes
 };
 
@@ -129,8 +130,11 @@ layer_state_t layer_state_set_user(layer_state_t state) {
 #    include "transactions.h"
 // generated picture for THEME_ART (run convert_image.py to (re)create art.h)
 #    include "art.h"
+// generated frame stream for THEME_VIDEO (run convert_video.py to (re)create video.h)
+#    include "video.h"
 
 #    define OLED_POWER_PIN GP20
+#    define VIDEO_FRAME_BYTES 1024 // 64x128 / 8: one full 1-bit portrait frame
 
 static const uint8_t OLED_WIDTH = OLED_DISPLAY_HEIGHT;
 static const uint16_t SPLASH_DURATION_MS = 2500;
@@ -448,6 +452,55 @@ static void render_bongo(void) {
     print_wpm(11);
 }
 
+// THEME_VIDEO: a looping 1-bit video. video.h holds a per-frame delta + RLE
+// stream (see convert_video.py): changed bytes are written straight into the
+// OLED framebuffer and unchanged bytes are left as-is, so no extra RAM buffer
+// is needed and only changed bytes go over I2C. Each half free-runs its own
+// player off its local clock, so the screens may drift slightly but both loop.
+static void render_video(void) {
+#ifdef HAVE_VIDEO_BITMAP
+    static uint32_t pos     = 0;
+    static uint16_t idx     = 0;
+    static uint32_t last_ms = 0;
+    const uint16_t  interval = 1000 / VIDEO_FPS;
+
+    // hold the current frame until it is time for the next one
+    if (idx != 0 && timer_elapsed32(last_ms) < interval) {
+        return;
+    }
+    // frame 0 is a keyframe encoded against a blank frame: clear the framebuffer
+    // and rewind the stream (this is also how the clip loops)
+    if (idx == 0) {
+        oled_clear();
+        pos = 0;
+    }
+
+    // decode one frame: walk exactly VIDEO_FRAME_BYTES framebuffer positions
+    uint16_t i = 0;
+    while (i < VIDEO_FRAME_BYTES && pos < VIDEO_STREAM_LEN) {
+        uint8_t tok = pgm_read_byte(&VIDEO_STREAM[pos++]);
+        uint8_t n   = tok & 0x7F;
+        if (tok & 0x80) { // literal run: write n new bytes into the framebuffer
+            while (n-- && i < VIDEO_FRAME_BYTES) {
+                oled_write_raw_byte(pgm_read_byte(&VIDEO_STREAM[pos++]), i++);
+            }
+        } else { // skip run: n bytes unchanged from the previous frame
+            i += n;
+        }
+    }
+
+    last_ms = timer_read32();
+    if (++idx >= VIDEO_FRAME_COUNT) {
+        idx = 0; // loop back to the keyframe
+    }
+#else
+    oled_set_cursor(0, 2);
+    oled_write_P(PSTR(" Video\n"), false);
+    oled_set_cursor(0, 6);
+    oled_write_P(PSTR(" folgt"), false);
+#endif
+}
+
 static void oled_post_init(void) {
     if (g_oled_init_done) {
         return;
@@ -482,6 +535,11 @@ bool oled_task_user(void) {
     // manage on/off state based on idle time; housekeeping_task_user() syncs the
     // resulting state to the slave (never send transactions from oled_task).
     if (is_keyboard_master()) {
+        // keep the screen awake while a video is playing (you are watching, not
+        // typing); the slave follows the synced oled_on state.
+        if (g_oled_theme == THEME_VIDEO) {
+            g_user_ontime = timer_read32();
+        }
         const uint32_t idle_time = timer_elapsed32(g_user_ontime);
         if (!is_oled_on()) {
             if (idle_time > OLED_TIMEOUT_USER) {
@@ -523,6 +581,9 @@ bool oled_task_user(void) {
             break;
         case THEME_BONGO:
             render_bongo();
+            break;
+        case THEME_VIDEO:
+            render_video();
             break;
         case THEME_HUD:
         default:
