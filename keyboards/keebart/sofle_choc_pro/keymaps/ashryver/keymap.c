@@ -32,7 +32,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |------+------+------+------+------+------|  Mute |    | Pause |------+------+------+------+------+------|
  * |OSShft|   Z  |   X  |   C  |   V  |   B  |-------|    |-------|   N  |   M  |   ,  |   .  |   /  |OSShft|
  * `-----------------------------------------/       /     \      \-----------------------------------------'
- *            | LCTL | LGUI | LALT | Bspc | /Enter  /       \Space \  | RGUI | DEL  | RALT | RCTL |
+ *            | LCTL | LGUI | LALT | Bspc | /Space  /       \Enter \  | RGUI | DEL  | RALT | RCTL |
  *            |      |      |      |  LT1 |/       /         \      \ | LT1  |      |      |      |
  *            `----------------------------------'           '------''---------------------------'
  */
@@ -41,7 +41,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_TAB,   KC_Q,   KC_W,    KC_E,    KC_R,    KC_T,                           KC_Y,     KC_U,     KC_I,    KC_O,    KC_P,    KC_BSPC,
     KC_ESC,   KC_A,   KC_S,    KC_D,    KC_F,    KC_G,                           KC_H,     KC_J,     KC_K,    KC_L,    KC_SCLN, KC_QUOT,
     OSM(MOD_LSFT),  KC_Z,   KC_X,    KC_C,    KC_V,    KC_B,    KC_MUTE,   KC_MPLY,    KC_N,     KC_M,     KC_COMM, KC_DOT,  KC_SLSH, OSM(MOD_LSFT),
-                 KC_LCTL, KC_LGUI, KC_LALT, LT(RAISE,KC_BSPC), KC_ENT,  KC_SPC, LT(LOWER,KC_RGUI),  KC_DEL,  KC_RALT, KC_RCTL
+                 KC_LCTL, KC_LGUI, KC_LALT, LT(RAISE,KC_BSPC), KC_SPC,  KC_ENT, LT(LOWER,KC_RGUI),  KC_DEL,  KC_RALT, KC_RCTL
 ),
 
 /*
@@ -55,7 +55,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |------+------+------+------+------+------|       |    |       |------+------+------+------+------+------|
  * |      |  =   |  -   |  +   |   {  |   }  |-------|    |-------|   [  |   ]  | Del  | Ins  |   \  |   |  |
  * `-----------------------------------------/       /     \      \-----------------------------------------'
- *            |      |      |      |      | /Enter  /       \Space \  |      |      |      |      |
+ *            |      |      |      |      | /Space  /       \Enter \  |      |      |      |      |
  *            `----------------------------------'           '------''---------------------------'
  */
 [LOWER] = LAYOUT_split_4x6_5(
@@ -77,7 +77,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |------+------+------+------+------+------|       |    |       |------+------+------+------+------+------|
  * |      |      |      |      |      |      |-------|    |-------|OLEDnx|      |      |      |      | Boot |
  * `-----------------------------------------/       /     \      \-----------------------------------------'
- *            |      |      |      |      | /Enter  /       \Space \  |      |      |      |      |
+ *            |      |      |      |      | /Space  /       \Enter \  |      |      |      |      |
  *            `----------------------------------'           '------''---------------------------'
  *  OLEDnx = cycle OLED motif (HUD -> Art -> Bongo), saved to EEPROM
  */
@@ -100,7 +100,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |------+------+------+------+------+------|       |    |       |------+------+------+------+------+------|
  * |      |      |      |      |      |      |-------|    |-------|      | WhDn |      |      |      |      |
  * `-----------------------------------------/       /     \      \-----------------------------------------'
- *            |      |      |      |      | /Enter  /       \Space \  |      |      |      |      |
+ *            |      |      |      |      | /Space  /       \Enter \  |      |      |      |      |
  *            `----------------------------------'           '------''---------------------------'
  */
 [MOUSE] = LAYOUT_split_4x6_5(
